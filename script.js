@@ -284,6 +284,10 @@ function showProperty(){
       <div>${listing.floor || ""}</div>
       <div>${formatRooms(listing.rooms, listing.baths, listing.parking)}</div>
       <div>${listing.size || ""} sqft</div>
+      ${listing.condition ? `<div><strong>Condition:</strong> ${listing.condition}</div>` : ""}
+      ${listing.mainFeatures ? `<div><strong>Main Features:</strong> ${listing.mainFeatures.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>` : ""}
+      ${listing.features ? `<div><strong>Features:</strong> ${listing.features.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>` : ""}
+      ${listing.furnishings ? `<div><strong>Furnishings:</strong> ${listing.furnishings.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>` : ""}
     </div>
   `;
 
