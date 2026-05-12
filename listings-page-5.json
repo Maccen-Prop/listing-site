@@ -1,0 +1,34 @@
+[
+  {
+    "id": "L-1778594611682",
+    "price": "160K",
+    "type": "Apartment @ Condominium Akasia Bukit Jalil, Jalan Bukit Jalil Indah 1",
+    "floor": "",
+    "rooms": "3",
+    "baths": "2",
+    "parking": "2",
+    "size": "1200",
+    "photos": [],
+    "video": "",
+    "condition": "Fully Furnished",
+    "mainFeatures": "Extended Kitchen, Expensive Renovation, Part Reno",
+    "features": "Gated Guarded, Strict Security, Anti-theft System",
+    "furnishings": "Water Heaters, Wardrobe, Fridge"
+  },
+  {
+    "id": "L-1778606864591",
+    "price": "400K",
+    "type": "Condominium @ Condominium Akasia Bukit Jalil, Jalan Bukit Jalil Indah 1",
+    "floor": "",
+    "rooms": "3",
+    "baths": "2",
+    "parking": "2",
+    "size": "1249",
+    "photos": [],
+    "video": "",
+    "condition": "Fully Furnished",
+    "mainFeatures": "Extended Kitchen, Extensive Reno, Front Extend",
+    "features": "Gated Guarded, Anti-theft System, Face Junction, Face Lake",
+    "furnishings": "Water Heaters, Sofa, Wardrobe"
+  }
+]
