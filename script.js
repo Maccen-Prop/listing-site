@@ -132,7 +132,12 @@ async function fetchJsonNoCache(url){
 }
 
 async function loadAll(){
-  let versionUrl = "https://raw.githubusercontent.com/maccencheong/listing-site/main/version.json?t=" + Date.now();
+  // Use GitHub Pages CDN (faster cache invalidation after commits).
+  // raw.githubusercontent.com has a slower CDN that can serve stale data
+  // for minutes-to-hours after a push, causing the version check to
+  // incorrectly match localStorage and skip re-fetching new listings.
+  const _BASE = "https://maccencheong.github.io/listing-site";
+  let versionUrl = `${_BASE}/version.json?t=` + Date.now();
   let version = await fetchJsonNoCache(versionUrl);
   currentVersion = String(version.version || "");
   let cacheVersion = localStorage.getItem("listingVersion");
@@ -147,7 +152,7 @@ async function loadAll(){
   let pages = Number(version.pages || 0);
   allData = [];
   for(let i = 1; i <= pages; i++){
-    let url = withVersion(`https://raw.githubusercontent.com/maccencheong/listing-site/main/listings-page-${i}.json`);
+    let url = `${_BASE}/listings-page-${i}.json?t=` + Date.now();
     let data = await fetchJsonNoCache(url);
     allData = allData.concat(data);
   }
