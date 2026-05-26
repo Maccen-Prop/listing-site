@@ -40,6 +40,27 @@ function formatRooms(r,b,p){
   return parts.join(" ");
 }
 
+function parseListingType(typeStr) {
+  if (!typeStr) return { propType: '', rawAddress: '' };
+  const atIdx = typeStr.indexOf(' @ ');
+  // No address combined — whole string is the property type (badge only, no address)
+  if (atIdx === -1) return { propType: typeStr.trim(), rawAddress: '' };
+  return { propType: typeStr.slice(0, atIdx).trim(), rawAddress: typeStr.slice(atIdx + 3).trim() };
+}
+
+function sanitizeAddress(rawAddress) {
+  if (!rawAddress) return '';
+  if (!/jalan/i.test(rawAddress)) return rawAddress;
+  const commaIdx = rawAddress.lastIndexOf(', ');
+  if (commaIdx === -1) return ''; // entire address is a Jalan — hide all
+  const before = rawAddress.slice(0, commaIdx).trim();
+  const after  = rawAddress.slice(commaIdx + 2).trim();
+  // "Complex Name, Jalan XYZ" → show complex name
+  if (/jalan/i.test(after)) return before;
+  // "Jalan XYZ, Community" → show community
+  return after;
+}
+
 function withVersion(url){
   if(!url) return "";
   let secureUrl = url.replace("http://", "https://");
@@ -50,15 +71,27 @@ function withVersion(url){
 function withImageSize(url, size){
   if(!url) return "";
 
-  // 1. 拦截空照片
+  // 拦截空照片
   if(url.includes("profile/picture/0") || url.includes("profile/picture/2")){
      return "https://placehold.co/600x400/eeeeee/999999?text=No+Photo";
   }
 
-  // 2. 官方极速通道：让照片秒开且无拦截报错
-  let match = url.match(/[-\w]{25,}/);
+  // lh3.googleusercontent.com CDN — append size suffix directly (fastest path)
+  if(url.includes("lh3.googleusercontent.com")){
+    const base = url.split("=")[0]; // strip any existing size param
+    return base + "=" + size;
+  }
+
+  // Firebase Storage — use directly, no Drive thumbnail needed
+  if(url.includes("firebasestorage.app") || url.includes("firebasestorage.googleapis.com")){
+    return url;
+  }
+
+  // Fallback: extract Drive file ID and use thumbnail API
+  // Must be exactly a Drive file ID (26-33 chars of [-\w]), not a domain/path
+  let match = url.match(/\/d\/([-\w]{25,})|id=([-\w]{25,})/);
   if(match){
-    let fileId = match[0];
+    const fileId = match[1] || match[2];
     return `https://drive.google.com/thumbnail?id=${fileId}&sz=${size}`;
   }
 
@@ -74,9 +107,15 @@ function preloadImage(url){
 // 将下载链接转换为预览链接以解决视频黑屏
 function getDrivePreviewUrl(url) {
   if (!url) return "";
+  // drive.google.com/uc?export=download&id=FILEID
   let match = url.match(/id=([-\w]{25,})/);
   if (match && match[1]) {
     return `https://drive.google.com/file/d/${match[1]}/preview`;
+  }
+  // lh3.googleusercontent.com/d/FILEID
+  let lhMatch = url.match(/lh3\.googleusercontent\.com\/d\/([-\w]{25,})/);
+  if (lhMatch && lhMatch[1]) {
+    return `https://drive.google.com/file/d/${lhMatch[1]}/preview`;
   }
   return url.replace("http://", "https://");
 }
@@ -140,6 +179,13 @@ async function loadAll(){
   let versionUrl = `${_BASE}/version.json?t=` + Date.now();
   let version = await fetchJsonNoCache(versionUrl);
   currentVersion = String(version.version || "");
+  // Force cache refresh if buildVersion changed (e.g., CRM upgraded 2.x → 3.0)
+  const _storedBuildVer = localStorage.getItem("listingBuildVersion");
+  if(_storedBuildVer && _storedBuildVer !== (version.buildVersion || "")){
+    localStorage.removeItem("listingVersion");
+    localStorage.removeItem("listingData");
+  }
+  localStorage.setItem("listingBuildVersion", version.buildVersion || "");
   let cacheVersion = localStorage.getItem("listingVersion");
   if(cacheVersion === currentVersion){
     let cached = localStorage.getItem("listingData");
@@ -188,15 +234,21 @@ function showListings(){
     let card = document.createElement("div");
     card.className = "card";
     let cover = item.photos?.[0] || "";
+    const coverSrc = cover ? withImageSize(cover, 'w600') : 'https://placehold.co/600x400/eeeeee/999999?text=No+Photo';
+    const { propType, rawAddress } = parseListingType(item.type);
+    const displayAddress = sanitizeAddress(rawAddress);
     card.innerHTML = `
       <a href="?id=${item.id}">
         <div class="image-wrap">
           <div class="img-skeleton"></div>
-          <img src="${cover ? withImageSize(cover, 'w600') : ''}" loading="lazy" referrerpolicy="no-referrer">
+          <img src="${coverSrc}" loading="lazy" referrerpolicy="no-referrer">
         </div>
         <div class="info">
-          <div class="price">${formatPrice(item.price)}</div>
-          <div>${item.type || ""}</div>
+          <div class="price-row">
+            <div class="price">${formatPrice(item.price)}</div>
+            ${propType ? `<span class="prop-type-badge">${propType}</span>` : ''}
+          </div>
+          ${displayAddress ? `<div class="address">${displayAddress}</div>` : ''}
           <div>${item.floor || ""}</div>
           <div>${formatRooms(item.rooms, item.baths, item.parking)}</div>
           <div>${item.size || ""} sqft</div>
@@ -274,6 +326,7 @@ function showProperty(){
       ${hasVideo ? `<button id="viewVideoBtn" style="background:#ff6600;">Watch Video</button>` : ""}
     </div>
     <div class="gallery" id="galleryContainer">
+      <div class="gallery-skeleton" id="gallerySkeleton"></div>
       <img id="propertyImage" src="" referrerpolicy="no-referrer">
       ${hasVideo ? `
         <div id="videoContainer" style="display:none; width:100%; height:450px;">
@@ -284,19 +337,31 @@ function showProperty(){
       <button class="next" id="nextBtn">❯</button>
     </div>
     <div class="info">
-      <div class="price">${formatPrice(listing.price)}</div>
-      <div>${listing.type || ""}</div>
-      <div>${listing.floor || ""}</div>
-      <div>${formatRooms(listing.rooms, listing.baths, listing.parking)}</div>
-      <div>${listing.size || ""} sqft</div>
-      ${listing.condition ? `<div><strong>Condition:</strong> ${listing.condition}</div>` : ""}
-      ${listing.mainFeatures ? `<div><strong>Main Features:</strong> ${listing.mainFeatures.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>` : ""}
-      ${listing.features ? `<div><strong>Features:</strong> ${listing.features.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>` : ""}
-      ${listing.furnishings ? `<div><strong>Furnishings:</strong> ${listing.furnishings.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>` : ""}
+      ${(() => {
+        const {propType, rawAddress} = parseListingType(listing.type);
+        const addr = sanitizeAddress(rawAddress);
+        const rows = [];
+        rows.push(`<div class="price-row"><div class="price">${formatPrice(listing.price)}</div>${propType ? `<span class="prop-type-badge">${propType}</span>` : ''}</div>`);
+        if (addr) rows.push(`<div class="address">${addr}</div>`);
+        if (listing.floor) rows.push(`<div class="detail-row"><span class="detail-label">Floor</span>${listing.floor}</div>`);
+        if (listing.rooms && listing.rooms !== '0') rows.push(`<div class="detail-row"><span class="detail-label">Bedrooms</span>${listing.rooms}</div>`);
+        if (listing.baths && listing.baths !== '0') rows.push(`<div class="detail-row"><span class="detail-label">Bathrooms</span>${listing.baths}</div>`);
+        if (listing.parking && listing.parking !== '0') rows.push(`<div class="detail-row"><span class="detail-label">Parking</span>${listing.parking}</div>`);
+        if (listing.size && listing.size !== '0') rows.push(`<div class="detail-row"><span class="detail-label">Built-up</span>${listing.size} sqft</div>`);
+        if (listing.landWidth && listing.landLength) rows.push(`<div class="detail-row"><span class="detail-label">Land</span>${listing.landWidth} × ${listing.landLength} ft</div>`);
+        else if (listing.landWidth) rows.push(`<div class="detail-row"><span class="detail-label">Width</span>${listing.landWidth} ft</div>`);
+        else if (listing.landLength) rows.push(`<div class="detail-row"><span class="detail-label">Length</span>${listing.landLength} ft</div>`);
+        if (listing.condition) rows.push(`<div class="detail-row"><span class="detail-label">Condition</span>${listing.condition}</div>`);
+        if (listing.mainFeatures) rows.push(`<div><strong>Main Features:</strong> ${listing.mainFeatures.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
+        if (listing.features) rows.push(`<div><strong>Features:</strong> ${listing.features.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
+        if (listing.furnishings) rows.push(`<div><strong>Furnishings:</strong> ${listing.furnishings.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
+        return rows.join('');
+      })()}
     </div>
   `;
 
   const image = document.getElementById("propertyImage");
+  const skeleton = document.getElementById("gallerySkeleton");
   const videoContainer = document.getElementById("videoContainer");
   const listingIframe = document.getElementById("listingIframe");
   const prevBtn = document.getElementById("prevBtn");
@@ -304,18 +369,34 @@ function showProperty(){
   const viewVideoBtn = document.getElementById("viewVideoBtn");
   const gallery = document.getElementById("galleryContainer");
 
+  let _loadToken = 0; // increments on each navigation — stale load events are ignored
+
   function updateGallery(){
     if(propertyViewState.index < photos.length){
-      // 显示照片
       image.style.display = "block";
       if(videoContainer) videoContainer.style.display = "none";
-      if(listingIframe) listingIframe.src = ""; 
-      
-      let currentPhoto = photos[propertyViewState.index] || "";
-      image.src = currentPhoto ? withImageSize(currentPhoto, "w1200") : "";
+      if(listingIframe) listingIframe.src = "";
+
+      const token = ++_loadToken;
+      const currentPhoto = photos[propertyViewState.index] || "";
+      const newSrc = currentPhoto ? withImageSize(currentPhoto, "w1200") : "";
+
+      // Show skeleton overlay while loading — keeps gallery height stable
+      if(skeleton) skeleton.style.display = "block";
+      image.style.opacity = "0";
+
+      const onDone = () => {
+        if(token !== _loadToken) return; // stale — a newer navigation already fired
+        if(skeleton) skeleton.style.display = "none";
+        image.style.opacity = "1";
+      };
+      image.onload  = onDone;
+      image.onerror = onDone;
+      image.src = newSrc;
+
       if(viewVideoBtn) viewVideoBtn.textContent = "Watch Video";
-      
-      let nextPhoto = photos[propertyViewState.index + 1] || "";
+
+      const nextPhoto = photos[propertyViewState.index + 1] || "";
       if(nextPhoto) preloadImage(withImageSize(nextPhoto, "w1200"));
     } else if (hasVideo) {
       // 只有在确定有视频的情况下，才允许进入显示视频的分支

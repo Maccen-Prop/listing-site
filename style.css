@@ -116,6 +116,7 @@ opacity:1;
 }
 
 .info{
+position:relative;
 padding:14px;
 font-size:14px;
 line-height:1.6;
@@ -217,10 +218,11 @@ position:relative;
 display:flex;
 justify-content:center;
 align-items:center;
-background:#fff;
+background:#f0f0f0;
 border-radius:12px;
 overflow:hidden;
 box-shadow:0 2px 10px rgba(0,0,0,0.08);
+min-height:300px;
 }
 
 .gallery img{
@@ -229,6 +231,18 @@ max-height:520px;
 object-fit:contain;
 display:block;
 background:#f0f0f0;
+transition:opacity 0.1s ease;
+}
+
+.gallery-skeleton{
+display:none;
+position:absolute;
+inset:0;
+background:linear-gradient(90deg,#efefef 25%,#f7f7f7 50%,#efefef 75%);
+background-size:200% 100%;
+animation:skeleton-shimmer 1.3s infinite;
+z-index:1;
+pointer-events:none;
 }
 
 .gallery button{
@@ -270,6 +284,62 @@ line-height:1.7;
 #property .price{
 font-size:24px;
 margin-bottom:10px;
+}
+
+.price-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:8px;
+margin-bottom:8px;
+}
+
+.price-row .price{
+margin-bottom:0;
+}
+
+.prop-type-badge{
+background:#222;
+color:#fff;
+font-size:11px;
+font-weight:600;
+padding:3px 9px;
+border-radius:5px;
+letter-spacing:0.3px;
+white-space:nowrap;
+flex-shrink:0;
+}
+
+.prop-type-badge-inline{
+display:inline-block;
+background:#222;
+color:#fff;
+font-size:12px;
+font-weight:600;
+padding:2px 10px;
+border-radius:5px;
+letter-spacing:0.2px;
+margin-bottom:4px;
+}
+
+.address{
+color:#333;
+font-size:13px;
+}
+
+.detail-row{
+display:flex;
+align-items:baseline;
+gap:8px;
+margin-bottom:4px;
+font-size:15px;
+}
+
+.detail-label{
+min-width:72px;
+color:#888;
+font-size:13px;
+flex-shrink:0;
 }
 
 .tag{
