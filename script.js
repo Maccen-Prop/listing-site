@@ -75,6 +75,24 @@ function buildAddressHtml(item) {
   return display ? `<div class="address">${display}</div>` : '';
 }
 
+// Convert any photo URL to an lh3 CDN URL for CORS-safe fetch download.
+// lh3 supports CORS; drive.google.com/thumbnail does not.
+function toDownloadUrl(url) {
+  if (!url) return '';
+  if (url.includes('lh3.googleusercontent.com')) {
+    return url.split('=')[0] + '=w1200';
+  }
+  if (url.includes('firebasestorage.app') || url.includes('firebasestorage.googleapis.com')) {
+    return url;
+  }
+  const match = url.match(/\/d\/([-\w]{25,})|id=([-\w]{25,})/);
+  if (match) {
+    const fileId = match[1] || match[2];
+    return `https://lh3.googleusercontent.com/d/${fileId}=w1200`;
+  }
+  return url.replace('http://', 'https://');
+}
+
 function withVersion(url){
   if(!url) return "";
   let secureUrl = url.replace("http://", "https://");
@@ -472,19 +490,33 @@ function showProperty(){
     if(propertyViewState.isDownloading) return;
     const btn = document.getElementById("downloadBtn");
     propertyViewState.isDownloading = true;
-    btn.textContent = "Downloading..."; btn.disabled = true;
+    btn.disabled = true;
     try {
-      let zip = new JSZip(); let folder = zip.folder("photos");
+      const zip = new JSZip();
+      const folder = zip.folder("photos");
+      let saved = 0;
       for(let i = 0; i < photos.length; i++){
-        let rawUrl = photos[i].replace("http://", "https://");
-        let resp = await fetch(rawUrl, { cache: "no-store" });
-        folder.file(`photo-${i+1}.jpg`, await resp.blob());
+        btn.textContent = `${i + 1} / ${photos.length}`;
+        try {
+          const imgUrl = toDownloadUrl(photos[i]);
+          const resp = await fetch(imgUrl, { mode: 'cors' });
+          if(!resp.ok) throw new Error();
+          folder.file(`photo-${i + 1}.jpg`, await resp.blob());
+          saved++;
+        } catch(_){ /* skip photos that can't be fetched */ }
       }
-      let content = await zip.generateAsync({type:"blob"});
-      let a = document.createElement("a"); a.href = URL.createObjectURL(content); a.download = "photos.zip"; a.click();
-      btn.textContent = "Done";
-    } catch(e) { alert("Failed"); }
-    setTimeout(() => { btn.textContent = "Download"; btn.disabled = false; propertyViewState.isDownloading = false; }, 1200);
+      if(saved === 0) throw new Error("no photos");
+      btn.textContent = "Zipping...";
+      const content = await zip.generateAsync({ type: "blob" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(content);
+      a.download = "photos.zip";
+      a.click();
+      btn.textContent = `Done (${saved})`;
+    } catch(e){
+      btn.textContent = "Failed";
+    }
+    setTimeout(() => { btn.textContent = "Download"; btn.disabled = false; propertyViewState.isDownloading = false; }, 2500);
   });
 
   updateGallery();
