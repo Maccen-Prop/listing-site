@@ -266,7 +266,7 @@ function showListings(){
     let card = document.createElement("div");
     card.className = "card";
     let cover = item.photos?.[0] || "";
-    const coverSrc = cover ? withImageSize(cover, 'w600') : 'https://placehold.co/600x400/eeeeee/999999?text=No+Photo';
+    const coverSrc = cover ? withImageSize(cover, 'w400') : 'https://placehold.co/600x400/eeeeee/999999?text=No+Photo';
     const { propType } = parseListingType(item.type);
     card.innerHTML = `
       <a href="?id=${item.id}">
@@ -492,6 +492,15 @@ function showProperty(){
     propertyViewState.isDownloading = true;
     btn.disabled = true;
     try {
+      if(typeof JSZip === 'undefined'){
+        btn.textContent = "Loading...";
+        await new Promise((res, rej) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+          s.onload = res; s.onerror = rej;
+          document.head.appendChild(s);
+        });
+      }
       const zip = new JSZip();
       const folder = zip.folder("photos");
       let saved = 0;
