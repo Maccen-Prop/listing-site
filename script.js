@@ -52,13 +52,27 @@ function sanitizeAddress(rawAddress) {
   if (!rawAddress) return '';
   if (!/jalan/i.test(rawAddress)) return rawAddress;
   const commaIdx = rawAddress.lastIndexOf(', ');
-  if (commaIdx === -1) return ''; // entire address is a Jalan — hide all
+  if (commaIdx === -1) return '';
   const before = rawAddress.slice(0, commaIdx).trim();
   const after  = rawAddress.slice(commaIdx + 2).trim();
-  // "Complex Name, Jalan XYZ" → show complex name
   if (/jalan/i.test(after)) return before;
-  // "Jalan XYZ, Community" → show community
   return after;
+}
+
+// Two-line address HTML matching CRM non-owner view:
+// Line 1 (bold): building name for Highrise, empty for Terrace
+// Line 2 (muted): Community + Taman + City
+// Falls back to legacy sanitizeAddress for old data without addrMain/addrArea.
+function buildAddressHtml(item) {
+  if (item.addrMain !== undefined || item.addrArea !== undefined) {
+    let html = '';
+    if (item.addrMain) html += `<div class="addr-main">${item.addrMain}</div>`;
+    if (item.addrArea) html += `<div class="addr-area">${item.addrArea}</div>`;
+    return html;
+  }
+  const { rawAddress } = parseListingType(item.type);
+  const display = sanitizeAddress(rawAddress);
+  return display ? `<div class="address">${display}</div>` : '';
 }
 
 function withVersion(url){
@@ -235,8 +249,7 @@ function showListings(){
     card.className = "card";
     let cover = item.photos?.[0] || "";
     const coverSrc = cover ? withImageSize(cover, 'w600') : 'https://placehold.co/600x400/eeeeee/999999?text=No+Photo';
-    const { propType, rawAddress } = parseListingType(item.type);
-    const displayAddress = sanitizeAddress(rawAddress);
+    const { propType } = parseListingType(item.type);
     card.innerHTML = `
       <a href="?id=${item.id}">
         <div class="image-wrap">
@@ -248,7 +261,7 @@ function showListings(){
             <div class="price">${formatPrice(item.price)}</div>
             ${propType ? `<span class="prop-type-badge">${propType}</span>` : ''}
           </div>
-          ${displayAddress ? `<div class="address">${displayAddress}</div>` : ''}
+          ${buildAddressHtml(item)}
           <div>${item.floor || ""}</div>
           <div>${formatRooms(item.rooms, item.baths, item.parking)}</div>
           <div>${item.size || ""} sqft</div>
@@ -338,11 +351,11 @@ function showProperty(){
     </div>
     <div class="info">
       ${(() => {
-        const {propType, rawAddress} = parseListingType(listing.type);
-        const addr = sanitizeAddress(rawAddress);
+        const {propType} = parseListingType(listing.type);
         const rows = [];
         rows.push(`<div class="price-row"><div class="price">${formatPrice(listing.price)}</div>${propType ? `<span class="prop-type-badge">${propType}</span>` : ''}</div>`);
-        if (addr) rows.push(`<div class="address">${addr}</div>`);
+        const addrHtml = buildAddressHtml(listing);
+        if (addrHtml) rows.push(addrHtml);
         if (listing.floor) rows.push(`<div class="detail-row"><span class="detail-label">Floor</span>${listing.floor}</div>`);
         if (listing.rooms && listing.rooms !== '0') rows.push(`<div class="detail-row"><span class="detail-label">Bedrooms</span>${listing.rooms}</div>`);
         if (listing.baths && listing.baths !== '0') rows.push(`<div class="detail-row"><span class="detail-label">Bathrooms</span>${listing.baths}</div>`);
