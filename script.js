@@ -7,6 +7,10 @@ let currentVersion = "";
 let currentSort = "default";
 let activeSearchPrice = 0;
 let propertyViewState = null;
+let activeCondition = '';
+const activeMainFeatures = new Set();
+const activeFeatures = new Set();
+const activeFurnishings = new Set();
 
 const id = new URLSearchParams(window.location.search).get("id");
 
@@ -29,7 +33,7 @@ function parsePriceNumber(p){
 function formatPrice(p){
   let num = parsePriceNumber(p);
   if(!num) return "";
-  return "RM " + Math.round(num).toLocaleString();
+  return "RM " + Math.round(num).toLocaleString('en-MY');
 }
 
 function formatRooms(r,b,p){
@@ -165,6 +169,25 @@ function cloneData(arr){
   return Array.isArray(arr) ? [...arr] : [];
 }
 
+function applyDataFilter(data) {
+  return data.filter(item => {
+    if (activeCondition && item.condition !== activeCondition) return false;
+    if (activeMainFeatures.size) {
+      const vals = (item.mainFeatures || '').split(',').map(v => v.trim());
+      if (!vals.some(v => activeMainFeatures.has(v))) return false;
+    }
+    if (activeFeatures.size) {
+      const vals = (item.features || '').split(',').map(v => v.trim());
+      if (!vals.some(v => activeFeatures.has(v))) return false;
+    }
+    if (activeFurnishings.size) {
+      const vals = (item.furnishings || '').split(',').map(v => v.trim());
+      if (!vals.some(v => activeFurnishings.has(v))) return false;
+    }
+    return true;
+  });
+}
+
 function sortListings(data){
   let result = cloneData(data);
   if(activeSearchPrice > 0){
@@ -191,7 +214,7 @@ function sortListings(data){
 }
 
 function updateResults(){
-  filteredData = sortListings(allData);
+  filteredData = sortListings(applyDataFilter(allData));
   page = 1;
   showListings();
 }
@@ -531,6 +554,66 @@ function showProperty(){
   updateGallery();
 }
 
+function syncClearBtn() {
+  const btn = document.getElementById('clearFilters');
+  if (!btn) return;
+  const hasActive = activeCondition || activeMainFeatures.size || activeFeatures.size || activeFurnishings.size;
+  btn.style.display = hasActive ? 'inline-block' : 'none';
+}
+
+function buildFilterUI() {
+  const collect = (field) => {
+    const s = new Set();
+    allData.forEach(item => {
+      (item[field] || '').split(',').forEach(v => { v = v.trim(); if (v) s.add(v); });
+    });
+    return [...s].sort();
+  };
+  function makeChips(containerId, values, activeSet) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = '';
+    values.forEach(val => {
+      const chip = document.createElement('span');
+      chip.className = 'chip' + (activeSet.has(val) ? ' active' : '');
+      chip.textContent = val;
+      chip.addEventListener('click', () => {
+        if (activeSet.has(val)) activeSet.delete(val);
+        else activeSet.add(val);
+        chip.classList.toggle('active');
+        syncClearBtn();
+        updateResults();
+      });
+      el.appendChild(chip);
+    });
+  }
+  makeChips('chipsMainFeatures', collect('mainFeatures'), activeMainFeatures);
+  makeChips('chipsFeatures',     collect('features'),     activeFeatures);
+  makeChips('chipsFurnishings',  collect('furnishings'),  activeFurnishings);
+
+  const condSel = document.getElementById('filterCondition');
+  if (condSel) {
+    condSel.addEventListener('change', () => {
+      activeCondition = condSel.value;
+      syncClearBtn();
+      updateResults();
+    });
+  }
+  const clearBtn = document.getElementById('clearFilters');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      activeCondition = '';
+      activeMainFeatures.clear();
+      activeFeatures.clear();
+      activeFurnishings.clear();
+      if (condSel) condSel.value = '';
+      document.querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
+      syncClearBtn();
+      updateResults();
+    });
+  }
+}
+
 async function init(){
   await loadAll();
   if(id) showProperty();
@@ -539,6 +622,7 @@ async function init(){
     const o = document.getElementById("sortSelect");
     if(s) s.addEventListener("input", applySearch);
     if(o) o.addEventListener("change", applySort);
+    buildFilterUI();
     filteredData = [...allData];
     showListings();
   }
