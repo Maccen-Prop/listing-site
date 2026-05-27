@@ -379,8 +379,8 @@ function showProperty(){
           rows.push(`<div class="detail-row"><span class="detail-label">Bedrooms</span>${listing.rooms}</div>`);
         if (listing.baths && listing.baths !== '0')
           rows.push(`<div class="detail-row"><span class="detail-label">Bathrooms</span>${listing.baths}</div>`);
-        if (listing.parking)
-          rows.push(`<div class="detail-row"><span class="detail-label">Parking</span>${listing.parking}</div>`);
+        if (listing.parking !== undefined && listing.parking !== null && listing.parking !== '')
+          rows.push(`<div class="detail-row"><span class="detail-label">Parking</span>${listing.parking == 0 ? 'No Parking' : listing.parking}</div>`);
         if (listing.size && listing.size !== '0')
           rows.push(`<div class="detail-row"><span class="detail-label">Built-up</span>${listing.size} sqft</div>`);
         if (listing.floor)
