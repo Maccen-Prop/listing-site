@@ -375,17 +375,16 @@ function showProperty(){
         rows.push(`<div class="price-row"><div class="price">${formatPrice(listing.price)}</div>${propType ? `<span class="prop-type-badge">${propType}</span>` : ''}</div>`);
         const addrHtml = buildAddressHtml(listing);
         if (addrHtml) rows.push(addrHtml);
-        const statCells = [];
         if (listing.rooms && listing.rooms !== '0')
-          statCells.push(`<div class="stat-cell"><span class="stat-value">${listing.rooms}</span><span class="stat-label">Bedrooms</span></div>`);
+          rows.push(`<div class="detail-row"><span class="detail-label">Bedrooms</span>${listing.rooms}</div>`);
         if (listing.baths && listing.baths !== '0')
-          statCells.push(`<div class="stat-cell"><span class="stat-value">${listing.baths}</span><span class="stat-label">Bathrooms</span></div>`);
-        statCells.push(`<div class="stat-cell"><span class="stat-value">${listing.parking || 0}</span><span class="stat-label">Parking</span></div>`);
+          rows.push(`<div class="detail-row"><span class="detail-label">Bathrooms</span>${listing.baths}</div>`);
+        if (listing.parking)
+          rows.push(`<div class="detail-row"><span class="detail-label">Parking</span>${listing.parking}</div>`);
         if (listing.size && listing.size !== '0')
-          statCells.push(`<div class="stat-cell"><span class="stat-value">${listing.size}</span><span class="stat-label">sqft</span></div>`);
+          rows.push(`<div class="detail-row"><span class="detail-label">Built-up</span>${listing.size} sqft</div>`);
         if (listing.floor)
-          statCells.push(`<div class="stat-cell"><span class="stat-value">${listing.floor}</span><span class="stat-label">Floor</span></div>`);
-        if (statCells.length) rows.push(`<div class="stat-grid">${statCells.join('')}</div>`);
+          rows.push(`<div class="detail-row"><span class="detail-label">Floor</span>${listing.floor}</div>`);
         if (listing.landWidth && listing.landLength) rows.push(`<div class="detail-row"><span class="detail-label">Land</span>${listing.landWidth} × ${listing.landLength} ft</div>`);
         else if (listing.landWidth) rows.push(`<div class="detail-row"><span class="detail-label">Width</span>${listing.landWidth} ft</div>`);
         else if (listing.landLength) rows.push(`<div class="detail-row"><span class="detail-label">Length</span>${listing.landLength} ft</div>`);
