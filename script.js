@@ -7,10 +7,6 @@ let currentVersion = "";
 let currentSort = "default";
 let activeSearchPrice = 0;
 let propertyViewState = null;
-let activeCondition = '';
-const activeMainFeatures = new Set();
-const activeFeatures = new Set();
-const activeFurnishings = new Set();
 
 const id = new URLSearchParams(window.location.search).get("id");
 
@@ -38,10 +34,10 @@ function formatPrice(p){
 
 function formatRooms(r,b,p){
   let parts = [];
-  if(r) parts.push(r + "R");
-  if(b) parts.push(b + "B");
-  if(p) parts.push(p + "P");
-  return parts.join(" ");
+  if(r && r !== '0') parts.push(r + " Room" + (parseInt(r) === 1 ? '' : 's'));
+  if(b && b !== '0') parts.push(b + " Bath" + (parseInt(b) === 1 ? '' : 's'));
+  if(p && p !== '0') parts.push(p + " Parking");
+  return parts.join(' · ');
 }
 
 function parseListingType(typeStr) {
@@ -169,24 +165,6 @@ function cloneData(arr){
   return Array.isArray(arr) ? [...arr] : [];
 }
 
-function applyDataFilter(data) {
-  return data.filter(item => {
-    if (activeCondition && item.condition !== activeCondition) return false;
-    if (activeMainFeatures.size) {
-      const vals = (item.mainFeatures || '').split(',').map(v => v.trim());
-      if (!vals.some(v => activeMainFeatures.has(v))) return false;
-    }
-    if (activeFeatures.size) {
-      const vals = (item.features || '').split(',').map(v => v.trim());
-      if (!vals.some(v => activeFeatures.has(v))) return false;
-    }
-    if (activeFurnishings.size) {
-      const vals = (item.furnishings || '').split(',').map(v => v.trim());
-      if (!vals.some(v => activeFurnishings.has(v))) return false;
-    }
-    return true;
-  });
-}
 
 function sortListings(data){
   let result = cloneData(data);
@@ -214,7 +192,7 @@ function sortListings(data){
 }
 
 function updateResults(){
-  filteredData = sortListings(applyDataFilter(allData));
+  filteredData = sortListings(allData);
   page = 1;
   showListings();
 }
@@ -397,18 +375,30 @@ function showProperty(){
         rows.push(`<div class="price-row"><div class="price">${formatPrice(listing.price)}</div>${propType ? `<span class="prop-type-badge">${propType}</span>` : ''}</div>`);
         const addrHtml = buildAddressHtml(listing);
         if (addrHtml) rows.push(addrHtml);
-        if (listing.floor) rows.push(`<div class="detail-row"><span class="detail-label">Floor</span>${listing.floor}</div>`);
-        if (listing.rooms && listing.rooms !== '0') rows.push(`<div class="detail-row"><span class="detail-label">Bedrooms</span>${listing.rooms}</div>`);
-        if (listing.baths && listing.baths !== '0') rows.push(`<div class="detail-row"><span class="detail-label">Bathrooms</span>${listing.baths}</div>`);
-        if (listing.parking && listing.parking !== '0') rows.push(`<div class="detail-row"><span class="detail-label">Parking</span>${listing.parking}</div>`);
-        if (listing.size && listing.size !== '0') rows.push(`<div class="detail-row"><span class="detail-label">Built-up</span>${listing.size} sqft</div>`);
+        const statCells = [];
+        if (listing.rooms && listing.rooms !== '0')
+          statCells.push(`<div class="stat-cell"><span class="stat-value">${listing.rooms}</span><span class="stat-label">Bedrooms</span></div>`);
+        if (listing.baths && listing.baths !== '0')
+          statCells.push(`<div class="stat-cell"><span class="stat-value">${listing.baths}</span><span class="stat-label">Bathrooms</span></div>`);
+        statCells.push(`<div class="stat-cell"><span class="stat-value">${listing.parking || 0}</span><span class="stat-label">Parking</span></div>`);
+        if (listing.size && listing.size !== '0')
+          statCells.push(`<div class="stat-cell"><span class="stat-value">${listing.size}</span><span class="stat-label">sqft</span></div>`);
+        if (listing.floor)
+          statCells.push(`<div class="stat-cell"><span class="stat-value">${listing.floor}</span><span class="stat-label">Floor</span></div>`);
+        if (statCells.length) rows.push(`<div class="stat-grid">${statCells.join('')}</div>`);
         if (listing.landWidth && listing.landLength) rows.push(`<div class="detail-row"><span class="detail-label">Land</span>${listing.landWidth} × ${listing.landLength} ft</div>`);
         else if (listing.landWidth) rows.push(`<div class="detail-row"><span class="detail-label">Width</span>${listing.landWidth} ft</div>`);
         else if (listing.landLength) rows.push(`<div class="detail-row"><span class="detail-label">Length</span>${listing.landLength} ft</div>`);
-        if (listing.condition) rows.push(`<div class="detail-row"><span class="detail-label">Condition</span>${listing.condition}</div>`);
-        if (listing.mainFeatures) rows.push(`<div><strong>Main Features:</strong> ${listing.mainFeatures.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
-        if (listing.features) rows.push(`<div><strong>Features:</strong> ${listing.features.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
-        if (listing.furnishings) rows.push(`<div><strong>Furnishings:</strong> ${listing.furnishings.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
+        const hasTags = listing.condition || listing.mainFeatures || listing.features || listing.furnishings;
+        if (hasTags) rows.push(`<hr class="info-divider">`);
+        if (listing.condition)
+          rows.push(`<div class="tag-section"><div class="tag-section-label">Condition</div><span class="tag">${listing.condition}</span></div>`);
+        if (listing.mainFeatures)
+          rows.push(`<div class="tag-section"><div class="tag-section-label">Main Features</div>${listing.mainFeatures.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
+        if (listing.features)
+          rows.push(`<div class="tag-section"><div class="tag-section-label">Features</div>${listing.features.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
+        if (listing.furnishings)
+          rows.push(`<div class="tag-section"><div class="tag-section-label">Furnishings</div>${listing.furnishings.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
         return rows.join('');
       })()}
     </div>
@@ -554,66 +544,6 @@ function showProperty(){
   updateGallery();
 }
 
-function syncClearBtn() {
-  const btn = document.getElementById('clearFilters');
-  if (!btn) return;
-  const hasActive = activeCondition || activeMainFeatures.size || activeFeatures.size || activeFurnishings.size;
-  btn.style.display = hasActive ? 'inline-block' : 'none';
-}
-
-function buildFilterUI() {
-  const collect = (field) => {
-    const s = new Set();
-    allData.forEach(item => {
-      (item[field] || '').split(',').forEach(v => { v = v.trim(); if (v) s.add(v); });
-    });
-    return [...s].sort();
-  };
-  function makeChips(containerId, values, activeSet) {
-    const el = document.getElementById(containerId);
-    if (!el) return;
-    el.innerHTML = '';
-    values.forEach(val => {
-      const chip = document.createElement('span');
-      chip.className = 'chip' + (activeSet.has(val) ? ' active' : '');
-      chip.textContent = val;
-      chip.addEventListener('click', () => {
-        if (activeSet.has(val)) activeSet.delete(val);
-        else activeSet.add(val);
-        chip.classList.toggle('active');
-        syncClearBtn();
-        updateResults();
-      });
-      el.appendChild(chip);
-    });
-  }
-  makeChips('chipsMainFeatures', collect('mainFeatures'), activeMainFeatures);
-  makeChips('chipsFeatures',     collect('features'),     activeFeatures);
-  makeChips('chipsFurnishings',  collect('furnishings'),  activeFurnishings);
-
-  const condSel = document.getElementById('filterCondition');
-  if (condSel) {
-    condSel.addEventListener('change', () => {
-      activeCondition = condSel.value;
-      syncClearBtn();
-      updateResults();
-    });
-  }
-  const clearBtn = document.getElementById('clearFilters');
-  if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-      activeCondition = '';
-      activeMainFeatures.clear();
-      activeFeatures.clear();
-      activeFurnishings.clear();
-      if (condSel) condSel.value = '';
-      document.querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
-      syncClearBtn();
-      updateResults();
-    });
-  }
-}
-
 async function init(){
   await loadAll();
   if(id) showProperty();
@@ -622,7 +552,6 @@ async function init(){
     const o = document.getElementById("sortSelect");
     if(s) s.addEventListener("input", applySearch);
     if(o) o.addEventListener("change", applySort);
-    buildFilterUI();
     filteredData = [...allData];
     showListings();
   }
