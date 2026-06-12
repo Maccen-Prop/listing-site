@@ -40,6 +40,24 @@ function formatRooms(r,b,p){
   return parts.join(' · ');
 }
 
+const META_ICONS = {
+  bed: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v11m0-4h18m0 4v-8a2 2 0 0 0-2-2h-8v6"/><circle cx="7" cy="10" r="1"/></svg>`,
+  bath: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16a1 1 0 0 1 1 1v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-2a1 1 0 0 1 1-1z"/><path d="M6 12V6a2 2 0 0 1 4 0"/><path d="M8 19l-1 2m10-2 1 2"/></svg>`,
+  car: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 17H3v-6l2-5h9l4 5h2a1 1 0 0 1 1 1v5h-2m-4 0H9"/></svg>`
+};
+
+// Bottom-aligned meta row: bed / bath / parking icons + size on the right.
+// Empty fields are skipped entirely so no blank rows or orphan "sqft" appear.
+function buildMetaRowHtml(item){
+  const parts = [];
+  if(item.rooms && item.rooms !== '0') parts.push(`<span class="meta-item">${META_ICONS.bed}${item.rooms}</span>`);
+  if(item.baths && item.baths !== '0') parts.push(`<span class="meta-item">${META_ICONS.bath}${item.baths}</span>`);
+  if(item.parking && item.parking !== '0') parts.push(`<span class="meta-item">${META_ICONS.car}${item.parking}</span>`);
+  const size = (item.size && item.size !== '0') ? `<span class="meta-size">${item.size} sqft</span>` : '';
+  if(!parts.length && !size) return '';
+  return `<div class="meta-row">${parts.join('')}${size}</div>`;
+}
+
 function parseListingType(typeStr) {
   if (!typeStr) return { propType: '', rawAddress: '' };
   const atIdx = typeStr.indexOf(' @ ');
@@ -274,16 +292,13 @@ function showListings(){
         <div class="image-wrap">
           <div class="img-skeleton"></div>
           <img src="${coverSrc}" loading="lazy" referrerpolicy="no-referrer">
+          ${propType ? `<span class="card-badge">${propType}</span>` : ''}
         </div>
         <div class="info">
-          <div class="price-row">
-            <div class="price">${formatPrice(item.price)}</div>
-            ${propType ? `<span class="prop-type-badge">${propType}</span>` : ''}
-          </div>
+          <div class="price">${formatPrice(item.price)}</div>
           ${buildAddressHtml(item)}
-          <div>${item.floor || ""}</div>
-          <div>${formatRooms(item.rooms, item.baths, item.parking)}</div>
-          <div>${item.size || ""} sqft</div>
+          ${item.floor ? `<div class="card-floor">${item.floor}</div>` : ''}
+          ${buildMetaRowHtml(item)}
         </div>
       </a>
     `;
@@ -350,6 +365,34 @@ function showProperty(){
 
   propertyViewState = { listing, index: 0, isDownloading: false };
 
+  const {propType} = parseListingType(listing.type);
+
+  // Build stats chips — only non-empty fields
+  const chips = [];
+  if (listing.rooms && listing.rooms !== '0') chips.push({label:'Bedrooms', val: listing.rooms});
+  if (listing.baths && listing.baths !== '0') chips.push({label:'Bathrooms', val: listing.baths});
+  if (listing.parking !== undefined && listing.parking !== null && listing.parking !== '')
+    chips.push({label:'Parking', val: listing.parking == 0 ? 'None' : listing.parking});
+  if (listing.size && listing.size !== '0') chips.push({label:'Built-up', val: listing.size + ' sqft'});
+  if (listing.floor) chips.push({label:'Floor', val: listing.floor});
+  if (listing.landWidth && listing.landLength) chips.push({label:'Land', val: `${listing.landWidth} × ${listing.landLength} ft`});
+  else if (listing.landWidth) chips.push({label:'Width', val: listing.landWidth + ' ft'});
+  else if (listing.landLength) chips.push({label:'Length', val: listing.landLength + ' ft'});
+  if (listing.sideLand && listing.sideLand !== '0') chips.push({label:'Side Land', val: listing.sideLand + ' ft'});
+
+  const statsHtml = chips.length
+    ? `<div class="property-stats-grid">${chips.map(c=>`<div class="stat-chip"><div class="stat-chip-label">${c.label}</div><div class="stat-chip-val">${c.val}</div></div>`).join('')}</div>`
+    : '';
+
+  const addrHtml = buildAddressHtml(listing);
+
+  const hasTags = listing.condition || listing.mainFeatures || listing.features || listing.furnishings;
+  let tagsHtml = hasTags ? `<hr class="info-divider">` : '';
+  if (listing.condition) tagsHtml += `<div class="tag-section"><div class="tag-section-label">Condition</div><span class="tag">${listing.condition}</span></div>`;
+  if (listing.mainFeatures) tagsHtml += `<div class="tag-section"><div class="tag-section-label">Main Features</div>${listing.mainFeatures.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`;
+  if (listing.features) tagsHtml += `<div class="tag-section"><div class="tag-section-label">Features</div>${listing.features.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`;
+  if (listing.furnishings) tagsHtml += `<div class="tag-section"><div class="tag-section-label">Furnishings</div>${listing.furnishings.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`;
+
   container.innerHTML = `
     <div class="topbar">
       <button id="backBtn">← Back</button>
@@ -365,41 +408,16 @@ function showProperty(){
           <iframe id="listingIframe" src="" style="width:100%; height:100%; border:none; background:#000;" allow="autoplay"></iframe>
         </div>
       ` : ""}
+      ${propType ? `<div class="gallery-type-badge">${propType}</div>` : ''}
+      ${totalItems > 1 ? `<span class="photo-counter" id="photoCounter">1 / ${totalItems}</span>` : ''}
       <button class="prev" id="prevBtn">❮</button>
       <button class="next" id="nextBtn">❯</button>
     </div>
     <div class="info">
-      ${(() => {
-        const {propType} = parseListingType(listing.type);
-        const rows = [];
-        rows.push(`<div class="price-row"><div class="price">${formatPrice(listing.price)}</div>${propType ? `<span class="prop-type-badge">${propType}</span>` : ''}</div>`);
-        const addrHtml = buildAddressHtml(listing);
-        if (addrHtml) rows.push(addrHtml);
-        if (listing.rooms && listing.rooms !== '0')
-          rows.push(`<div class="detail-row"><span class="detail-label">Bedrooms</span>${listing.rooms}</div>`);
-        if (listing.baths && listing.baths !== '0')
-          rows.push(`<div class="detail-row"><span class="detail-label">Bathrooms</span>${listing.baths}</div>`);
-        if (listing.parking !== undefined && listing.parking !== null && listing.parking !== '')
-          rows.push(`<div class="detail-row"><span class="detail-label">Parking</span>${listing.parking == 0 ? 'No Parking' : listing.parking}</div>`);
-        if (listing.size && listing.size !== '0')
-          rows.push(`<div class="detail-row"><span class="detail-label">Built-up</span>${listing.size} sqft</div>`);
-        if (listing.floor)
-          rows.push(`<div class="detail-row"><span class="detail-label">Floor</span>${listing.floor}</div>`);
-        if (listing.landWidth && listing.landLength) rows.push(`<div class="detail-row"><span class="detail-label">Land</span>${listing.landWidth} × ${listing.landLength} ft</div>`);
-        else if (listing.landWidth) rows.push(`<div class="detail-row"><span class="detail-label">Width</span>${listing.landWidth} ft</div>`);
-        else if (listing.landLength) rows.push(`<div class="detail-row"><span class="detail-label">Length</span>${listing.landLength} ft</div>`);
-        const hasTags = listing.condition || listing.mainFeatures || listing.features || listing.furnishings;
-        if (hasTags) rows.push(`<hr class="info-divider">`);
-        if (listing.condition)
-          rows.push(`<div class="tag-section"><div class="tag-section-label">Condition</div><span class="tag">${listing.condition}</span></div>`);
-        if (listing.mainFeatures)
-          rows.push(`<div class="tag-section"><div class="tag-section-label">Main Features</div>${listing.mainFeatures.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
-        if (listing.features)
-          rows.push(`<div class="tag-section"><div class="tag-section-label">Features</div>${listing.features.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
-        if (listing.furnishings)
-          rows.push(`<div class="tag-section"><div class="tag-section-label">Furnishings</div>${listing.furnishings.split(',').map(f=>`<span class="tag">${f.trim()}</span>`).join('')}</div>`);
-        return rows.join('');
-      })()}
+      <div class="price">${formatPrice(listing.price)}</div>
+      ${addrHtml}
+      ${statsHtml}
+      ${tagsHtml}
     </div>
   `;
 
@@ -451,9 +469,10 @@ function showProperty(){
       if(viewVideoBtn) viewVideoBtn.textContent = "Show Photos";
     }
 
-    // 禁用按钮逻辑，如果没有视频，划到最后一张照片右边箭头就会变灰，无法继续滑
     prevBtn.disabled = propertyViewState.index <= 0;
     nextBtn.disabled = propertyViewState.index >= totalItems - 1;
+    const counter = document.getElementById("photoCounter");
+    if (counter) counter.textContent = `${propertyViewState.index + 1} / ${totalItems}`;
   }
 
   prevBtn.addEventListener("click", () => {
@@ -545,8 +564,10 @@ function showProperty(){
 
 async function init(){
   await loadAll();
-  if(id) showProperty();
-  else {
+  if(id){
+    document.querySelector('.toolbar').style.display = 'none';
+    showProperty();
+  } else {
     const s = document.getElementById("searchInput");
     const o = document.getElementById("sortSelect");
     if(s) s.addEventListener("input", applySearch);

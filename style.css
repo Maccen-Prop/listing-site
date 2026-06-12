@@ -74,6 +74,14 @@ border-radius:12px;
 overflow:hidden;
 box-shadow:0 2px 10px rgba(0,0,0,0.1);
 transition:0.2s;
+display:flex;
+flex-direction:column;
+}
+
+.card a{
+display:flex;
+flex-direction:column;
+flex:1;
 }
 
 .card:hover{
@@ -122,6 +130,61 @@ font-size:14px;
 line-height:1.6;
 }
 
+.card .info{
+display:flex;
+flex-direction:column;
+flex:1;
+}
+
+.card-badge{
+position:absolute;
+bottom:0;
+left:0;
+right:0;
+background:linear-gradient(transparent,rgba(0,0,0,0.65));
+color:#fff;
+font-size:11px;
+font-weight:600;
+padding:20px 10px 8px;
+border-radius:0;
+letter-spacing:0.3px;
+white-space:normal;
+z-index:1;
+}
+
+.card-floor{
+font-size:13px;
+color:#555;
+}
+
+.meta-row{
+margin-top:auto;
+display:flex;
+align-items:center;
+gap:12px;
+padding-top:10px;
+border-top:1px solid #eee;
+font-size:13px;
+color:#444;
+}
+
+.meta-item{
+display:inline-flex;
+align-items:center;
+gap:4px;
+}
+
+.meta-item svg{
+width:15px;
+height:15px;
+flex-shrink:0;
+}
+
+.meta-size{
+margin-left:auto;
+color:#666;
+}
+
 .info > div{
 margin-bottom:4px;
 word-break:break-word;
@@ -136,6 +199,15 @@ font-size:20px;
 font-weight:bold;
 margin-bottom:8px;
 white-space:nowrap;
+}
+
+#listings:empty{
+padding:0;
+}
+
+#pagination:empty{
+margin:0;
+padding:0;
 }
 
 #pagination{
@@ -219,11 +291,65 @@ position:relative;
 display:flex;
 justify-content:center;
 align-items:center;
-background:#f0f0f0;
+background:#fff;
 border-radius:12px;
 overflow:hidden;
 box-shadow:0 2px 10px rgba(0,0,0,0.08);
 min-height:300px;
+}
+
+.gallery-type-badge{
+position:absolute;
+bottom:12px;
+left:12px;
+background:rgba(0,0,0,0.55);
+color:#fff;
+font-size:12px;
+font-weight:600;
+padding:4px 12px;
+border-radius:20px;
+letter-spacing:0.3px;
+pointer-events:none;
+z-index:1;
+}
+
+.photo-counter{
+position:absolute;
+top:12px;
+right:12px;
+background:rgba(0,0,0,0.55);
+color:#fff;
+font-size:12px;
+padding:4px 10px;
+border-radius:20px;
+z-index:2;
+pointer-events:none;
+}
+
+.property-stats-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(100px,1fr));
+gap:8px;
+margin-top:12px;
+margin-bottom:4px;
+}
+
+.stat-chip{
+background:#f5f5f5;
+border-radius:8px;
+padding:8px 12px;
+}
+
+.stat-chip-label{
+font-size:11px;
+color:#888;
+margin-bottom:2px;
+}
+
+.stat-chip-val{
+font-size:14px;
+font-weight:600;
+color:#111;
 }
 
 .gallery img{
@@ -231,7 +357,7 @@ width:100%;
 max-height:520px;
 object-fit:contain;
 display:block;
-background:#f0f0f0;
+background:transparent;
 transition:opacity 0.1s ease;
 }
 
