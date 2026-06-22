@@ -259,8 +259,19 @@ async function loadAll(){
     allData = allData.concat(data);
   }
   filteredData = [...allData];
-  localStorage.setItem("listingVersion", currentVersion);
-  localStorage.setItem("listingData", JSON.stringify(allData));
+  try {
+    localStorage.setItem("listingVersion", currentVersion);
+    localStorage.setItem("listingData", JSON.stringify(allData));
+  } catch(e){
+    // localStorage quota (~5MB) exceeded — too many listings to cache as one
+    // blob. The site still works this session (allData is already in memory);
+    // we just clear the partial cache so the next visit re-fetches pages
+    // instead of white-screening on an uncaught QuotaExceededError.
+    try {
+      localStorage.removeItem("listingVersion");
+      localStorage.removeItem("listingData");
+    } catch(_){ /* ignore */ }
+  }
 }
 
 function applySearch(){
