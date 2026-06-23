@@ -1,5 +1,27 @@
 [
   {
+    "id": "L-1782190689905",
+    "price": "415K",
+    "type": "Condominium @ Kompleks Suria Kinrara, Taman Kinrara Seksyen 3, Puchong",
+    "addrMain": "Kompleks Suria Kinrara",
+    "addrArea": "Taman Kinrara Seksyen 3, Puchong",
+    "floor": "",
+    "rooms": "0",
+    "baths": "3",
+    "parking": "0",
+    "size": "1300",
+    "landWidth": "",
+    "landLength": "",
+    "sideLand": "",
+    "photos": [],
+    "video": "",
+    "condition": "Partially Furnished",
+    "mainFeatures": "",
+    "features": "Gated Guarded",
+    "furnishings": "",
+    "_idx": 0
+  },
+  {
     "id": "GOeTvWvUaW",
     "price": "1.9K",
     "type": "Service Residence @ Mira Shorea Park Residence 1, Shorea Park, Puchong",
@@ -29,7 +51,7 @@
     "mainFeatures": "Part Reno, Kitchen Table Top",
     "features": "Gated Guarded",
     "furnishings": "Aircond, Water Heaters, Fridge",
-    "_idx": 0
+    "_idx": 1
   },
   {
     "id": "qhCFiI5Eyz",
@@ -58,7 +80,7 @@
     "mainFeatures": "Expensive Renovation",
     "features": "Gated Community, Strict Security",
     "furnishings": "Aircond, Water Heaters, TV Cabinet + Sofa Set, Wardrobe, Dressing Table, Fridge, Dining Table Set, Washing Machine, Bed Frame + Bed",
-    "_idx": 1
+    "_idx": 2
   },
   {
     "id": "sXu2eVb6ky",
@@ -96,7 +118,7 @@
     "mainFeatures": "Full Reno, Wet + Dry Kitchen, Kitchen Table Top",
     "features": "Gated Guarded, Strict Security, Near LRT",
     "furnishings": "Aircond, Water Heaters, TV Cabinet + Sofa Set, Wardrobe, Bed Frame + Bed, Fridge, Cooker and Hob, Dining Table Set, Washing Machine",
-    "_idx": 2
+    "_idx": 3
   },
   {
     "id": "6hQeCLaSVZ",
@@ -128,7 +150,7 @@
     "mainFeatures": "",
     "features": "",
     "furnishings": "",
-    "_idx": 3
+    "_idx": 4
   },
   {
     "id": "Gjh1Gh41zs",
@@ -161,7 +183,7 @@
     "mainFeatures": "Extended Kitchen, Kitchen Cabinet",
     "features": "",
     "furnishings": "",
-    "_idx": 4
+    "_idx": 5
   },
   {
     "id": "1kT8kYnvrr",
@@ -183,7 +205,7 @@
     "mainFeatures": "",
     "features": "Big Built-Up, Refurbished",
     "furnishings": "",
-    "_idx": 5
+    "_idx": 6
   },
   {
     "id": "LsgnSqrml0",
@@ -232,7 +254,7 @@
     "mainFeatures": "Kitchen Cabinet",
     "features": "Strict Security",
     "furnishings": "",
-    "_idx": 6
+    "_idx": 7
   },
   {
     "id": "xLgvt1ydZ2",
@@ -263,7 +285,7 @@
     "mainFeatures": "Extended Kitchen",
     "features": "Big Size",
     "furnishings": "",
-    "_idx": 7
+    "_idx": 8
   },
   {
     "id": "GZFMPFTjnH",
@@ -296,7 +318,7 @@
     "mainFeatures": "Expensive Renovation",
     "features": "Good Unit, Big Size",
     "furnishings": "",
-    "_idx": 8
+    "_idx": 9
   },
   {
     "id": "GaDKhfDd4b",
@@ -329,7 +351,7 @@
     "mainFeatures": "",
     "features": "Basic Unit, Good Unit",
     "furnishings": "",
-    "_idx": 9
+    "_idx": 10
   },
   {
     "id": "UpFvk87reC",
@@ -361,7 +383,7 @@
     "mainFeatures": "Back & Top Extend",
     "features": "Near LRT, Near School",
     "furnishings": "",
-    "_idx": 10
+    "_idx": 11
   },
   {
     "id": "tpMP7HfUkY",
@@ -401,7 +423,7 @@
     "mainFeatures": "",
     "features": "Good Unit, Basic Unit",
     "furnishings": "",
-    "_idx": 11
+    "_idx": 12
   },
   {
     "id": "Aj5LWGXqL1",
@@ -442,7 +464,7 @@
     "mainFeatures": "Part Reno",
     "features": "Refurbished",
     "furnishings": "",
-    "_idx": 12
+    "_idx": 13
   },
   {
     "id": "2xHiEwNX6M",
@@ -483,7 +505,7 @@
     "mainFeatures": "",
     "features": "Newly Painted",
     "furnishings": "",
-    "_idx": 13
+    "_idx": 14
   },
   {
     "id": "LIH0TqfthJ",
@@ -513,7 +535,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded, High ROI, Good Rental",
     "furnishings": "",
-    "_idx": 14
+    "_idx": 15
   },
   {
     "id": "G2uHHsoBxu",
@@ -549,7 +571,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded",
     "furnishings": "",
-    "_idx": 15
+    "_idx": 16
   },
   {
     "id": "JbIjRd9SUY",
@@ -583,7 +605,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded",
     "furnishings": "",
-    "_idx": 16
+    "_idx": 17
   },
   {
     "id": "SNWNXBgk3E",
@@ -618,7 +640,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded",
     "furnishings": "",
-    "_idx": 17
+    "_idx": 18
   },
   {
     "id": "jQ4qIvgiyB",
@@ -648,7 +670,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded, Good Rental, High ROI",
     "furnishings": "",
-    "_idx": 18
+    "_idx": 19
   },
   {
     "id": "Dr4fKEDi6X",
@@ -698,7 +720,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded, Best Scenery, Brand New, Actual Photo",
     "furnishings": "",
-    "_idx": 19
+    "_idx": 20
   },
   {
     "id": "z6wztm2p9z",
@@ -739,7 +761,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded, High-value residential area, Brand New",
     "furnishings": "",
-    "_idx": 20
+    "_idx": 21
   },
   {
     "id": "dcDZ3jL9RF",
@@ -794,7 +816,7 @@
     "mainFeatures": "",
     "features": "Basic Unit",
     "furnishings": "",
-    "_idx": 21
+    "_idx": 22
   },
   {
     "id": "xGc2ZF0BRL",
@@ -836,7 +858,7 @@
     "mainFeatures": "Extended Kitchen",
     "features": "Actual Photo",
     "furnishings": "",
-    "_idx": 22
+    "_idx": 23
   },
   {
     "id": "TTPP5zj108",
@@ -870,7 +892,7 @@
     "mainFeatures": "Extended Kitchen, Kitchen Table Top",
     "features": "Good Unit",
     "furnishings": "",
-    "_idx": 23
+    "_idx": 24
   },
   {
     "id": "isJL5DlmLd",
@@ -905,7 +927,7 @@
     "mainFeatures": "Extended Kitchen",
     "features": "Full Tiles",
     "furnishings": "",
-    "_idx": 24
+    "_idx": 25
   },
   {
     "id": "et55bmIwwT",
@@ -946,7 +968,7 @@
     "mainFeatures": "",
     "features": "Face Open",
     "furnishings": "",
-    "_idx": 25
+    "_idx": 26
   },
   {
     "id": "BKB6EHn8dP",
@@ -997,7 +1019,7 @@
     "mainFeatures": "Extended Kitchen",
     "features": "Face Open, Move In Ready, Newly Painted",
     "furnishings": "Aircond, Water Heaters",
-    "_idx": 26
+    "_idx": 27
   },
   {
     "id": "QUfGTBhygY",
@@ -1045,7 +1067,7 @@
     "mainFeatures": "Kitchen Table Top, Kitchen Cabinet",
     "features": "Gated Guarded, Strict Security",
     "furnishings": "",
-    "_idx": 27
+    "_idx": 28
   },
   {
     "id": "IbVJySiUSv",
@@ -1076,7 +1098,7 @@
     "mainFeatures": "Kitchen Table Top",
     "features": "Gated Guarded, Good Unit, Big Built-Up",
     "furnishings": "",
-    "_idx": 28
+    "_idx": 29
   },
   {
     "id": "Y08ctBnZ0a",
@@ -1104,7 +1126,7 @@
     "mainFeatures": "",
     "features": "",
     "furnishings": "",
-    "_idx": 29
+    "_idx": 30
   },
   {
     "id": "dCC92JAQ0K",
@@ -1139,7 +1161,7 @@
     "mainFeatures": "Expensive Renovation, Kitchen Cabinet",
     "features": "Gated Guarded, Gated Community",
     "furnishings": "",
-    "_idx": 30
+    "_idx": 31
   },
   {
     "id": "TOLKEIh1Az",
@@ -1179,7 +1201,7 @@
     "mainFeatures": "Extended Kitchen",
     "features": "",
     "furnishings": "",
-    "_idx": 31
+    "_idx": 32
   },
   {
     "id": "wVs2ixuwWf",
@@ -1237,7 +1259,7 @@
     "mainFeatures": "Full Reno + Extend, Extended Kitchen, Expensive Renovation, Back Extend, Kitchen Table Top, Wet + Dry Kitchen",
     "features": "Big Built-Up, Big Land, Move In Ready, Actual Photo",
     "furnishings": "",
-    "_idx": 32
+    "_idx": 33
   },
   {
     "id": "y7XiueSSEw",
@@ -1275,7 +1297,7 @@
     "mainFeatures": "Extended Kitchen, Kitchen Cabinet, Kitchen Table Top",
     "features": "Face Open, Modern Design",
     "furnishings": "",
-    "_idx": 33
+    "_idx": 34
   },
   {
     "id": "CLiNoTzUfc",
@@ -1311,7 +1333,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded, Face Open",
     "furnishings": "",
-    "_idx": 34
+    "_idx": 35
   },
   {
     "id": "WozQUVGM4D",
@@ -1344,7 +1366,7 @@
     "mainFeatures": "Kitchen Table Top",
     "features": "Strict Security, Face Open, Big Built-Up",
     "furnishings": "",
-    "_idx": 35
+    "_idx": 36
   },
   {
     "id": "L0hElR812o",
@@ -1377,7 +1399,7 @@
     "mainFeatures": "",
     "features": "Face Open, Big Land, Near Field",
     "furnishings": "",
-    "_idx": 36
+    "_idx": 37
   },
   {
     "id": "GWAheAdTrH",
@@ -1417,7 +1439,7 @@
     "mainFeatures": "Extended Kitchen, Front Extend, Kitchen Table Top",
     "features": "Modern Design, Refurbished",
     "furnishings": "",
-    "_idx": 37
+    "_idx": 38
   },
   {
     "id": "Fdwzmd6ivB",
@@ -1461,7 +1483,7 @@
     "mainFeatures": "Front & Back Extend",
     "features": "Face Field",
     "furnishings": "",
-    "_idx": 38
+    "_idx": 39
   },
   {
     "id": "fEXDhSA9KR",
@@ -1512,7 +1534,7 @@
     "mainFeatures": "Front & Back Extend, Kitchen Table Top",
     "features": "Big Built-Up, Face Open",
     "furnishings": "",
-    "_idx": 39
+    "_idx": 40
   },
   {
     "id": "t7eWAPwoeC",
@@ -1563,7 +1585,7 @@
     "mainFeatures": "Extensive Reno, Kitchen Table Top, Kitchen Cabinet",
     "features": "Big Built-Up, High-end Finishing",
     "furnishings": "",
-    "_idx": 40
+    "_idx": 41
   },
   {
     "id": "saGHD5ElDw",
@@ -1591,7 +1613,7 @@
     "mainFeatures": "Kitchen Cabinet, Kitchen Table Top",
     "features": "Strict Security",
     "furnishings": "Dining Table Set, TV Cabinet + Sofa Set",
-    "_idx": 41
+    "_idx": 42
   },
   {
     "id": "NZZLDgDeaX",
@@ -1619,7 +1641,7 @@
     "mainFeatures": "",
     "features": "",
     "furnishings": "",
-    "_idx": 42
+    "_idx": 43
   },
   {
     "id": "WrrCMz057S",
@@ -1650,7 +1672,7 @@
     "mainFeatures": "Kitchen Cabinet, Kitchen Table Top",
     "features": "Gated Guarded, Strict Security, Modern Design, ID Design",
     "furnishings": "TV Cabinet + Sofa Set, Bed Frame + Bed, Cooker and Hob, Dining Table Set, Shoes Rack",
-    "_idx": 43
+    "_idx": 44
   },
   {
     "id": "O7CrkWpi7J",
@@ -1682,7 +1704,7 @@
     "mainFeatures": "Kitchen Cabinet, Kitchen Table Top",
     "features": "Gated Guarded, Strict Security, Face Open, Actual Photo",
     "furnishings": "Aircond, Water Heaters, Wardrobe, Cooker and Hob",
-    "_idx": 44
+    "_idx": 45
   },
   {
     "id": "bRqs8NMmoM",
@@ -1729,7 +1751,7 @@
     "mainFeatures": "Extended Kitchen, Part Reno",
     "features": "Gated Guarded",
     "furnishings": "",
-    "_idx": 45
+    "_idx": 46
   },
   {
     "id": "0xtMhDnd6R",
@@ -1762,7 +1784,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded, Good Unit, Basic Unit, Big Built-Up",
     "furnishings": "",
-    "_idx": 46
+    "_idx": 47
   },
   {
     "id": "Gzzkdy6Kyx",
@@ -1817,7 +1839,7 @@
     "mainFeatures": "Kitchen Cabinet, Kitchen Table Top",
     "features": "Gated Guarded, Strict Security, Good Unit, Face TnB, Face Open",
     "furnishings": "Aircond, Water Heaters, Sofa, TV Cabinet + Sofa Set, Wardrobe, Bed Frame + Bed, Fridge, Cooker and Hob, Dining Table Set",
-    "_idx": 47
+    "_idx": 48
   },
   {
     "id": "gtEN8H1141",
@@ -1852,34 +1874,6 @@
     "condition": "Not Furnished",
     "mainFeatures": "",
     "features": "Gated Guarded, Strict Security, Good Unit, Basic Unit, Face Open, Face Swimming Pool",
-    "furnishings": "",
-    "_idx": 48
-  },
-  {
-    "id": "HBCN7Kv2Y2",
-    "price": "330K",
-    "type": "Apartment @ Pangsapuri Harmoni 1 RSKU, Putra Heights, Subang Jaya",
-    "addrMain": "Pangsapuri Harmoni 1 RSKU",
-    "addrArea": "Putra Heights, Subang Jaya",
-    "floor": "",
-    "rooms": "3",
-    "baths": "2",
-    "parking": "2",
-    "size": "1000",
-    "landWidth": "",
-    "landLength": "",
-    "sideLand": "",
-    "photos": [
-      "https://lh3.googleusercontent.com/d/1UMf8iaKDsHLtTw_pQ3iRioSH2DSCsJD-",
-      "https://lh3.googleusercontent.com/d/1NuC01xuFPuTzms_5RQDETWLnnpxs5_x4",
-      "https://lh3.googleusercontent.com/d/1g71oBVxoHJzVFSdHDFV3mG5l2nWJY5oy",
-      "https://lh3.googleusercontent.com/d/1VUoS4BdNcRcjfOoO_KyYuGuICyMlJJUx",
-      "https://lh3.googleusercontent.com/d/11dYz8PFR4qdKPnUNmU3dYP8LD1adm7nN"
-    ],
-    "video": "",
-    "condition": "Not Furnished",
-    "mainFeatures": "",
-    "features": "Good Unit, Basic Unit, Face Open, Big Built-Up, Big Living, Low Floor",
     "furnishings": "",
     "_idx": 49
   }

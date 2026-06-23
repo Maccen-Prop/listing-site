@@ -1,12 +1,12 @@
 {
   "pages": 2,
-  "totalListings": 55,
+  "totalListings": 56,
   "listingChecksum": "MHh0TWhEbmQ2Ujo6",
   "checksumVersion": 1,
   "schemaVersion": 1,
   "generatedBy": "server-multitenant",
-  "revision": 154,
-  "parentRevision": 153,
-  "timestamp": 1782189029524,
-  "version": 1782189029524
+  "revision": 155,
+  "parentRevision": 154,
+  "timestamp": 1782190697339,
+  "version": 1782190697339
 }

@@ -1,5 +1,33 @@
 [
   {
+    "id": "HBCN7Kv2Y2",
+    "price": "330K",
+    "type": "Apartment @ Pangsapuri Harmoni 1 RSKU, Putra Heights, Subang Jaya",
+    "addrMain": "Pangsapuri Harmoni 1 RSKU",
+    "addrArea": "Putra Heights, Subang Jaya",
+    "floor": "",
+    "rooms": "3",
+    "baths": "2",
+    "parking": "2",
+    "size": "1000",
+    "landWidth": "",
+    "landLength": "",
+    "sideLand": "",
+    "photos": [
+      "https://lh3.googleusercontent.com/d/1UMf8iaKDsHLtTw_pQ3iRioSH2DSCsJD-",
+      "https://lh3.googleusercontent.com/d/1NuC01xuFPuTzms_5RQDETWLnnpxs5_x4",
+      "https://lh3.googleusercontent.com/d/1g71oBVxoHJzVFSdHDFV3mG5l2nWJY5oy",
+      "https://lh3.googleusercontent.com/d/1VUoS4BdNcRcjfOoO_KyYuGuICyMlJJUx",
+      "https://lh3.googleusercontent.com/d/11dYz8PFR4qdKPnUNmU3dYP8LD1adm7nN"
+    ],
+    "video": "",
+    "condition": "Not Furnished",
+    "mainFeatures": "",
+    "features": "Good Unit, Basic Unit, Face Open, Big Built-Up, Big Living, Low Floor",
+    "furnishings": "",
+    "_idx": 50
+  },
+  {
     "id": "ID3BhjkteH",
     "price": "330K",
     "type": "Condominium @ Puri Aiyu Condominium, Seksyen 22, Shah Alam",
@@ -35,7 +63,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded, Strict Security, Good Unit, Basic Unit",
     "furnishings": "",
-    "_idx": 50
+    "_idx": 51
   },
   {
     "id": "PZG3ki1U88",
@@ -67,7 +95,7 @@
     "mainFeatures": "",
     "features": "Good Unit, Basic Unit, Low Floor",
     "furnishings": "",
-    "_idx": 51
+    "_idx": 52
   },
   {
     "id": "jS9bppn2pk",
@@ -96,7 +124,7 @@
     "mainFeatures": "",
     "features": "Gated Guarded, Strict Security, Good Unit, Basic Unit",
     "furnishings": "",
-    "_idx": 52
+    "_idx": 53
   },
   {
     "id": "tRrPqgGLJ9",
@@ -163,7 +191,7 @@
     "mainFeatures": "Extended Kitchen, Kitchen Cabinet, Kitchen Table Top",
     "features": "Gated Guarded, Good Unit, Face Open, Wide Carporch, Move In Ready, Near School, Carporch Tiles, Upstairs Tiles, Refurbished, Actual Photo",
     "furnishings": "Sofa, Tea Table, Dining Table Set",
-    "_idx": 53
+    "_idx": 54
   },
   {
     "id": "HRqrlHzSXm",
@@ -210,6 +238,6 @@
     "mainFeatures": "Full Reno + Extend, Extended Kitchen, Back Extend",
     "features": "Gated Guarded, Good Unit, Move In Ready, Lock-Stock-Barrel, Near School, Near LRT, Full Tiles, Actual Photo",
     "furnishings": "Water Heaters, Tea Table, TV Cabinet + Sofa Set, Wardrobe, Dressing Table, Bed Frame + Bed, Fridge, Cooker and Hob",
-    "_idx": 54
+    "_idx": 55
   }
 ]
