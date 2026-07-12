@@ -5,8 +5,8 @@
   "checksumVersion": 2,
   "schemaVersion": 1,
   "generatedBy": "server-multitenant",
-  "revision": 2,
-  "parentRevision": 1,
-  "timestamp": 1783879465740,
-  "version": 1783879465640
+  "revision": 3,
+  "parentRevision": 2,
+  "timestamp": 1783881002586,
+  "version": 1783881002586
 }
