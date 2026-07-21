@@ -13,7 +13,13 @@
     "landWidth": "",
     "landLength": "",
     "sideLand": "",
-    "photos": [],
+    "photos": [
+      "https://lh3.googleusercontent.com/d/1ghvcMpiH4cdf2etsgUbTNn6ult-JuMYc",
+      "https://lh3.googleusercontent.com/d/1eAjLI5fGUCatzRA1Ig3YTMiXNDzWNvLH",
+      "https://lh3.googleusercontent.com/d/1qUFOpXgZHUZUleAXsgNa6cyPooXpiD73",
+      "https://lh3.googleusercontent.com/d/1oqCmgHZyEtEz4d1tdVyvx5Xoh2VCB5-T",
+      "https://lh3.googleusercontent.com/d/1z4wscFpXC_PtsvsFZCym8S7eRSs3sEVX"
+    ],
     "video": "",
     "condition": "Fully Furnished",
     "mainFeatures": "Kitchen Table Top",
